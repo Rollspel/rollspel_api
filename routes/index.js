@@ -50,7 +50,7 @@ router.post('/add', async function(req, res){
                 const numberInDb = await db.collection(MONGODB_COLLEC).find({randomNumber: randomNumber.randomNumber}).toArray();
                 res.status(200).send({
                     error: null,
-                    randonNumber: numberInDb[0].name,
+                    randonNumber: numberInDb[0].randomNumber,
                     createdAt: numberInDb[0].createdAt
                 });
             await client.close();
