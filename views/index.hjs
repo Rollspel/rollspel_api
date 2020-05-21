@@ -15,11 +15,12 @@
         <script>
             //Auto-connect when the client is on this page
             var socket = io.connect('http://localhost:4000');
+
             socket.on('message', function(message) {
                 alert('Le serveur a un message pour vous : ' + message);
             })
             var pseudo = prompt('Quel est votre pseudo ?');
-            socket.emit('petit_nouveau', pseudo);
+            socket.emit('petit_nouveau', username);
 
             $('#poke').click(function() {
                 socket.emit('message', "Salut le serveur, ça roule ? ");

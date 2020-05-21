@@ -10,16 +10,17 @@ const socketIO = {
 
             // Quand le serveur reçoit un signal de type "message" du client
             socket.on('message', function (message) {
-                console.log(socket.pseudo + " me parle ! Il me dit : " + message);
+                console.log(socket.username + " me parle ! Il me dit : " + message);
+
             });
 
             //Stocker des informations dans un socket. Genre un pseudo
-            socket.on('petit_nouveau', function(pseudo) {
-                socket.pseudo = pseudo;
+            socket.on('petit_nouveau', function(username) {
+                socket.username = username;
             });
 
             socket.on('disconnect', () => {
-            console.log('disconnection : ', socket.id);
+            console.log('disconnection : ', socket.id, socket.username);
             });
         });
     }
