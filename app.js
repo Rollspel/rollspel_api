@@ -1,13 +1,18 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const http = require('http');
+const socketIO = require('./socketio');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+const gamesRouter = require('./routes/games');
 
-var app = express();
+const app = express();
+const server = http.createServer(app);
+const PORT = process.env.PORT || 4000;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -21,7 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-
+app.use('/games', gamesRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
@@ -38,4 +43,8 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
+server.listen(PORT, err => {
+	if (err) throw err;
+	socketIO.start(server);
+	console.log(`Server started and listening the port ${PORT} !`);
+});

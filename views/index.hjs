@@ -1,11 +1,29 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>{{ title }}</title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1>{{ title }}</h1>
-    <p>Welcome to {{ title }}</p>
-  </body>
+    <head>
+        <title>{{ title }}</title>
+        <link rel='stylesheet' href='/stylesheets/style.css' />
+    </head>
+    <body>
+        <h1>{{ title }}</h1>
+        <p>Welcome to {{ title }}</p>
+        <p><input type="button" value="Embêter le serveur" id="poke" /></p>
+    </body>
+
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+        <script>
+            //Auto-connect when the client is on this page
+            var socket = io.connect('http://localhost:4000');
+
+            socket.on('message', function(message) {
+                alert('Le serveur a un message pour vous : ' + message);
+            })
+            var pseudo = prompt('Quel est votre pseudo ?');
+            socket.emit('petit_nouveau', username);
+
+            $('#poke').click(function() {
+                socket.emit('message', "Salut le serveur, ça roule ? ");
+            })
+         </script>
 </html>
