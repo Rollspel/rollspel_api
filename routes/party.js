@@ -4,13 +4,12 @@ const {MongoClient} = require('../tools');
 const {dateNow} = require('../tools');
 const ObjectId = require('mongodb').ObjectId;
 
-
 var express = require('express');
 var router = express.Router();
-const MONGODB_COLLEC = 'Games';
+const MONGODB_COLLEC = 'Party';
 
 /**
- * @GET | GET all Games from database
+ * @GET | GET all Party from database
  *
  * @Route("/getAll")
  */
@@ -19,23 +18,23 @@ router.get('/getAll', async function(req, res, next) {
     const client = new MongoClient(MONGODB_URI);
     client.connect().then(async function(response) {
         const db = client.db(MONGODB_DBNAME);
-        const games = await db.collection(MONGODB_COLLEC).find().toArray();
+        const party = await db.collection(MONGODB_COLLEC).find().toArray();
         await client.close();
         res.status(200).send({
             error: null,
-            games: games
+            party: party
         });
     }).catch(function (error) {
         console.log("Error server " + error.stack);
         res.status(500).send({
             error: error.stack,
-            games: []
+            party: []
         });
     });
 });
 
 /**
- * @POST | GET Game by id from database
+ * @POST | GET Party by id from database
  *
  * @Route("/getById")
  */
@@ -44,92 +43,86 @@ router.post('/getById', async function(req, res, next) {
     const client = new MongoClient(MONGODB_URI);
     client.connect().then(async function(response) {
         const db = client.db(MONGODB_DBNAME);
-        const game = await db.collection(MONGODB_COLLEC).find({_id: ObjectId(req.body._id)}).toArray();
+        const party = await db.collection(MONGODB_COLLEC).find({_id: ObjectId(req.body._id)}).toArray();
         await client.close();
         res.status(200).send({
             error: null,
-            game: game
+            party: party
         });
     }).catch(function (error) {
         console.log("Error server " + error.stack);
         res.status(500).send({
             error: error.stack,
-            game: []
+            party: []
         });
     });
 });
 
+
 /**
- * @POST | GET Games with this quantity of player from database
+ * @GET | GET Party by element(s)
  *
- * @Route("/getByPlayer")
+ * @Route("/getByElement")
  */
-router.post('/getByPlayer', async function(req, res, next) {
+router.post('/getByElement', async function(req, res, next) {
 
     const client = new MongoClient(MONGODB_URI);
+    console.log(req.body);
     client.connect().then(async function(response) {
         const db = client.db(MONGODB_DBNAME);
-        const games = await db.collection(MONGODB_COLLEC).find({player: req.body.player}).toArray();
+        const party = await db.collection(MONGODB_COLLEC).find(req.body).toArray();
         await client.close();
         res.status(200).send({
             error: null,
-            games: games
+            party: party
         });
     }).catch(function (error) {
         console.log("Error server " + error.stack);
         res.status(500).send({
             error: error.stack,
-            games: []
+            party: []
         });
     });
 });
 
+
 /**
- * @POST | Add Game on database
+ * @POST | Add Party on database
  *
  * @Route("/add")
  */
 router.post('/add', async function(req, res){
 
-    const name = req.body.name,
-        img = req.body.img,
-        description = req.body.description,
-        player = req.body.player,
-        board = req.body.board;
-
+    const finalBoardState = req.body.finalBoardState,
+        players = req.body.players,
+        winner = req.body.winner,
+        rounds = req.body.rounds,
+        game = req.body.game,
+        createdAt = dateNow();
     const client = new MongoClient(MONGODB_URI);
     client.connect()
         .then(async function(response){
-
             const db = client.db(MONGODB_DBNAME);
-            const gameWithSameName = await db.collection(MONGODB_COLLEC).find({ name: req.body.name }).toArray();
-
-            if(gameWithSameName.length > 0){
-                res.status(400).send({
-                    error: 'This game already exists'
-                });
-            } else {
-                const newGame = {
-                    name: name,
-                    img: img,
-                    description: description,
-                    player: player,
-                    board: board,
-                    createdAt: dateNow()
-                };
-                await db.collection(MONGODB_COLLEC).insertOne(newGame);
-                const gameInDb = await db.collection(MONGODB_COLLEC).find({ name: name}).toArray();
-                res.status(200).send({
-                    error: null,
-                    _id: ObjectId(gameInDb[0]._id),
-                    name: gameInDb[0].name,
-                    img: gameInDb[0].img,
-                    description: gameInDb[0].description,
-                    player: gameInDb[0].player,
-                    board: gameInDb[0].board,
-                    createdAt: gameInDb[0].createdAt
-                });
-            }
+            const newParty = {
+                finalBoardState: finalBoardState,
+                players: players,
+                winner: winner,
+                rounds: rounds,
+                game: game,
+                createdAt: createdAt
+            };
+            await db.collection(MONGODB_COLLEC).insertOne(newParty);
+            const partyInDb = await db.collection(MONGODB_COLLEC).find({createdAt: createdAt}).toArray();
+            res.status(200).send({
+                error: null,
+                _id: ObjectId(partyInDb[0]._id),
+                finalBoardState: partyInDb[0].finalBoardState,
+                players: partyInDb[0].players,
+                winner: partyInDb[0].winner,
+                rounds: partyInDb[0].rounds,
+                game: partyInDb[0].game,
+                createdAt: partyInDb[0].createdAt
+            });
             await client.close();
         }).catch(function(error){
         res.status(500).send({

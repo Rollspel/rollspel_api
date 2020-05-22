@@ -7,8 +7,9 @@ const http = require('http');
 const socketIO = require('./socketio');
 
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
-const gamesRouter = require('./routes/games');
+const gameRouter = require('./routes/game');
+const partyRouter = require('./routes/party');
+const playerRouter = require('./routes/player');
 
 const app = express();
 const server = http.createServer(app);
@@ -25,8 +26,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/games', gamesRouter);
+app.use('/game', gameRouter);
+app.use('/party', partyRouter);
+app.use('/player', playerRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
