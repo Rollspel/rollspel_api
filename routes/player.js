@@ -1,6 +1,7 @@
 const {MONGODB_URI} = require('../tools');
 const {MONGODB_DBNAME} = require('../tools');
 const {MongoClient} = require('../tools');
+const {Player} = require('../BDD_objects/Player');
 const {dateNow} = require('../tools');
 const ObjectId = require('mongodb').ObjectId;
 
@@ -15,7 +16,6 @@ const MONGODB_COLLEC = 'Players';
  * @Route("/getAll")
  */
 router.get('/getAll', async function(req, res, next) {
-
     const client = new MongoClient(MONGODB_URI);
     client.connect().then(async function(response) {
         const db = client.db(MONGODB_DBNAME);
@@ -91,20 +91,16 @@ router.post('/getByUsername', async function(req, res, next) {
  */
 router.post('/add', async function(req, res){
 
-    const username = req.body.username,
-        localID = req.body.localID,
-        createdAt = dateNow();
+    const player = Object.create(Player);
+    player.username = req.body.username;
+    player.localID = req.body.localID;
+    player.printInformation();
     const client = new MongoClient(MONGODB_URI);
     client.connect()
         .then(async function(response){
             const db = client.db(MONGODB_DBNAME);
-            const newPlayer = {
-                username: username,
-                localID: localID,
-                createdAt: createdAt
-            };
-            await db.collection(MONGODB_COLLEC).insertOne(newPlayer);
-            const playerInDb = await db.collection(MONGODB_COLLEC).find({createdAt: createdAt}).toArray();
+            await db.collection(MONGODB_COLLEC).insertOne(player);
+            const playerInDb = await db.collection(MONGODB_COLLEC).find({createdAt: player.createdAt}).toArray();
             res.status(200).send({
                 error: null,
                 _id: ObjectId(playerInDb[0]._id),

@@ -1,6 +1,7 @@
 const {MONGODB_URI} = require('../tools');
 const {MONGODB_DBNAME} = require('../tools');
 const {MongoClient} = require('../tools');
+const {Party} = require('../BDD_objects/Party');
 const {dateNow} = require('../tools');
 const ObjectId = require('mongodb').ObjectId;
 
