@@ -4,12 +4,13 @@ const {MongoClient} = require('../tools');
 const {dateNow} = require('../tools');
 const ObjectId = require('mongodb').ObjectId;
 
+
 var express = require('express');
 var router = express.Router();
-const MONGODB_COLLEC = 'Party';
+const MONGODB_COLLEC = 'Players';
 
 /**
- * @GET | GET all Party from database
+ * @GET | GET all Players from database
  *
  * @Route("/getAll")
  */
@@ -18,23 +19,23 @@ router.get('/getAll', async function(req, res, next) {
     const client = new MongoClient(MONGODB_URI);
     client.connect().then(async function(response) {
         const db = client.db(MONGODB_DBNAME);
-        const party = await db.collection(MONGODB_COLLEC).find().toArray();
+        const player = await db.collection(MONGODB_COLLEC).find().toArray();
         await client.close();
         res.status(200).send({
             error: null,
-            party: party
+            player: player
         });
     }).catch(function (error) {
         console.log("Error server " + error.stack);
         res.status(500).send({
             error: error.stack,
-            party: []
+            player: []
         });
     });
 });
 
 /**
- * @POST | GET Party by id from database
+ * @POST | GET Player by id from database
  *
  * @Route("/getById")
  */
@@ -43,85 +44,73 @@ router.post('/getById', async function(req, res, next) {
     const client = new MongoClient(MONGODB_URI);
     client.connect().then(async function(response) {
         const db = client.db(MONGODB_DBNAME);
-        const party = await db.collection(MONGODB_COLLEC).find({_id: ObjectId(req.body._id)}).toArray();
+        const player = await db.collection(MONGODB_COLLEC).find({_id: ObjectId(req.body._id)}).toArray();
         await client.close();
         res.status(200).send({
             error: null,
-            party: party
+            player: player
         });
     }).catch(function (error) {
         console.log("Error server " + error.stack);
         res.status(500).send({
             error: error.stack,
-            party: []
+            player: []
         });
     });
 });
 
-
 /**
- * @GET | GET Party by element(s)
+ * @POST | GET Player by username from database
  *
- * @Route("/getByElement")
+ * @Route("/getByUsername")
  */
-router.post('/getByElement', async function(req, res, next) {
+router.post('/getByUsername', async function(req, res, next) {
 
     const client = new MongoClient(MONGODB_URI);
-    console.log(req.body);
     client.connect().then(async function(response) {
         const db = client.db(MONGODB_DBNAME);
-        const party = await db.collection(MONGODB_COLLEC).find(req.body).toArray();
+        const player = await db.collection(MONGODB_COLLEC).find({username: req.body.username}).toArray();
         await client.close();
         res.status(200).send({
             error: null,
-            party: party
+            player: player
         });
     }).catch(function (error) {
         console.log("Error server " + error.stack);
         res.status(500).send({
             error: error.stack,
-            party: []
+            player: []
         });
     });
 });
 
-
 /**
- * @POST | Add Party on database
+ * @POST | Add Player on database
  *
  * @Route("/add")
  */
 router.post('/add', async function(req, res){
 
-    const finalBoardState = req.body.finalBoardState,
-        players = req.body.players,
-        winner = req.body.winner,
-        rounds = req.body.rounds,
-        game = req.body.game,
+    const username = req.body.username,
+        localID = req.body.localID,
         createdAt = dateNow();
     const client = new MongoClient(MONGODB_URI);
     client.connect()
         .then(async function(response){
             const db = client.db(MONGODB_DBNAME);
-            const newParty = {
-                finalBoardState: finalBoardState,
-                players: players,
-                winner: winner,
-                rounds: rounds,
-                game: game,
+            const newPlayer = {
+                username: username,
+                localID: localID,
                 createdAt: createdAt
             };
-            await db.collection(MONGODB_COLLEC).insertOne(newParty);
-            const partyInDb = await db.collection(MONGODB_COLLEC).find({createdAt: createdAt}).toArray();
+            await db.collection(MONGODB_COLLEC).insertOne(newPlayer);
+            const playerInDb = await db.collection(MONGODB_COLLEC).find({createdAt: createdAt}).toArray();
             res.status(200).send({
                 error: null,
-                _id: ObjectId(partyInDb[0]._id),
-                finalBoardState: partyInDb[0].finalBoardState,
-                players: partyInDb[0].players,
-                winner: partyInDb[0].winner,
-                rounds: partyInDb[0].rounds,
-                game: partyInDb[0].game,
-                createdAt: partyInDb[0].createdAt
+                _id: ObjectId(playerInDb[0]._id),
+                username: playerInDb[0].username,
+                localID: playerInDb[0].localID,
+                createdAt: playerInDb[0].createdAt
             });
             await client.close();
         }).catch(function(error){
