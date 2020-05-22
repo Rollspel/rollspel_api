@@ -20,7 +20,7 @@
                 alert('Le serveur a un message pour vous : ' + message);
             })
             var pseudo = prompt('Quel est votre pseudo ?');
-            socket.emit('petit_nouveau', username);
+            socket.emit('petit_nouveau', pseudo);
 
             $('#poke').click(function() {
                 socket.emit('message', "Salut le serveur, ça roule ? ");
