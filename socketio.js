@@ -6,7 +6,7 @@ const socketIO = {
         ioServer.on('connection', socket => {
             console.log('connection : ', socket.id);
             socket.emit('message', "vous êtes bien connecté !");
-            // socket.broadcast.emit('message', 'Un autre client vient de se connecter !');
+            socket.broadcast.emit('message', 'Un autre client vient de se connecter !');
 
             // Quand le serveur reçoit un signal de type "message" du client
             socket.on('message', function (message) {
