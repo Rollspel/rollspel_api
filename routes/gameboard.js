@@ -1,41 +1,40 @@
 const {MONGODB_URI} = require('../tools');
 const {MONGODB_DBNAME} = require('../tools');
 const {MongoClient} = require('../tools');
-const {Player} = require('../BDD_objects/Player');
 const {dateNow} = require('../tools');
 const ObjectId = require('mongodb').ObjectId;
 
-
 var express = require('express');
 var router = express.Router();
-const MONGODB_COLLEC = 'Players';
+const MONGODB_COLLEC = 'Gameboard';
 
 /**
- * @GET | GET all Players from database
+ * @GET | GET all Gameboard from database
  *
  * @Route("/getAll")
  */
 router.get('/getAll', async function(req, res, next) {
+
     const client = new MongoClient(MONGODB_URI);
     client.connect().then(async function(response) {
         const db = client.db(MONGODB_DBNAME);
-        const player = await db.collection(MONGODB_COLLEC).find().toArray();
+        const gameboard = await db.collection(MONGODB_COLLEC).find().toArray();
         await client.close();
         res.status(200).send({
             error: null,
-            player: player
+            gameboard: gameboard
         });
     }).catch(function (error) {
         console.log("Error server " + error.stack);
         res.status(500).send({
             error: error.stack,
-            player: []
+            gameboard: []
         });
     });
 });
 
 /**
- * @POST | GET Player by id from database
+ * @POST | GET Gameboard by id from database
  *
  * @Route("/getById")
  */
@@ -44,69 +43,45 @@ router.post('/getById', async function(req, res, next) {
     const client = new MongoClient(MONGODB_URI);
     client.connect().then(async function(response) {
         const db = client.db(MONGODB_DBNAME);
-        const player = await db.collection(MONGODB_COLLEC).find({_id: ObjectId(req.body._id)}).toArray();
+        const gameboard = await db.collection(MONGODB_COLLEC).find({_id: ObjectId(req.body._id)}).toArray();
         await client.close();
         res.status(200).send({
             error: null,
-            player: player
+            gameboard: gameboard
         });
     }).catch(function (error) {
         console.log("Error server " + error.stack);
         res.status(500).send({
             error: error.stack,
-            player: []
+            gameboard: []
         });
     });
 });
 
 /**
- * @POST | GET Player by username from database
- *
- * @Route("/getByUsername")
- */
-router.post('/getByUsername', async function(req, res, next) {
-
-    const client = new MongoClient(MONGODB_URI);
-    client.connect().then(async function(response) {
-        const db = client.db(MONGODB_DBNAME);
-        const player = await db.collection(MONGODB_COLLEC).find({username: req.body.username}).toArray();
-        await client.close();
-        res.status(200).send({
-            error: null,
-            player: player
-        });
-    }).catch(function (error) {
-        console.log("Error server " + error.stack);
-        res.status(500).send({
-            error: error.stack,
-            player: []
-        });
-    });
-});
-
-/**
- * @POST | Add Player on database
+ * @POST | Add Gameboard on database
  *
  * @Route("/add")
  */
 router.post('/add', async function(req, res){
 
-    const player = Object.create(Player);
-    player.username = req.body.username;
-    player.localID = req.body.localID;
-    player.printInformation();
+    const gameboardID = req.body.gameboardID,
+        createdAt = dateNow();
     const client = new MongoClient(MONGODB_URI);
     client.connect()
         .then(async function(response){
             const db = client.db(MONGODB_DBNAME);
-            await db.collection(MONGODB_COLLEC).insertOne(player);
-            const playerInDb = await db.collection(MONGODB_COLLEC).find({createdAt: player.createdAt}).toArray();
+            const newGameboard = {
+                gameboardID: gameboardID,
+                createdAt: createdAt
+            };
+            await db.collection(MONGODB_COLLEC).insertOne(newGameboard);
+            const gameboardInDb = await db.collection(MONGODB_COLLEC).find({createdAt: createdAt}).toArray();
             res.status(200).send({
                 error: null,
-                _id: ObjectId(playerInDb[0]._id),
-                username: playerInDb[0].username,
-                localID: playerInDb[0].localID,
-                createdAt: playerInDb[0].createdAt
+                _id: ObjectId(gameboardInDb[0]._id),
+                gameboardID: gameboardInDb[0].gameboardID,
+                createdAt: gameboardInDb[0].createdAt
             });
             await client.close();
         }).catch(function(error){
