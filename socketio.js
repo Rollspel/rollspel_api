@@ -42,6 +42,7 @@ const socketIO = {
             // Update board when tap is OK
             socket.on('player_tap', (data) => {
                 console.log(data);
+                console.log("Data.gameboardID : " + data.gameboard);
                 const user = users.find(user => user.gameboardID === data.gameboardID);
                 if(user){
                     ioServer.to(user.socketID).emit('player_receive_new_board', data.board);
