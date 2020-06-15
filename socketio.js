@@ -28,19 +28,32 @@ const socketIO = {
                 }
             });
 
+            // Update board when tap is OK
             socket.on('player_tap', (data) => {
-                console.log(data);
                 const user = users.find(user => user.gameboardID === data.gameboardID);
                 if(user){
-                    console.log('Sending new board');
                     ioServer.to(user.socketID).emit('player_receive_new_board', data.board);
                 }
             });
 
-            //Stocker des informations dans un socket. Genre un pseudo
-            socket.on('petit_nouveau', function(username) {
-                socket.username = username;
+
+            // Don 't update board when tap is KO
+            socket.on('player_tap_not_empty', (data) => {
+                const user = users.find(user => user.gameboardID === data.gameboardID);
+                if(user){
+                    ioServer.to(user.socketID).emit('player_receive_tap_not_empty');
+                }
             });
+
+            // Player win 
+
+            socket.on('player_win', (data) => {
+                const user = users.find(user => user.gameboardID === data.gameboardID);
+                if(user){
+                    ioServer.to(user.socketID).emit('player_receive_winner', data.activePlayerIndex);
+                }
+            });
+
 
             socket.on('disconnect', () => {
                 socket.broadcast.emit('message', socket.username + ' s\'est déconnecté.');
