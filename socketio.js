@@ -11,6 +11,17 @@ const socketIO = {
     start: server => {
         const ioServer = io(server);
         ioServer.on('connection', socket => {
+            
+            console.log('connection', socket.id);
+
+
+            socket.on('message', (message) => {
+                console.log(message);
+            });
+
+            socket.on('receive_message', (message) => {
+                socket.broadcast.emit(message);
+            });
 
             // Add a new gameboard 
             socket.on('add_gameboard', (gameboardID) => {
