@@ -2,6 +2,10 @@ const io = require('socket.io');
 
 let users = [];
 let gameboards = [{ socketID: "12345", gameboardID: "12345" }];
+var board = [
+    [9,9,9],
+    [9,9,9],
+    [9,9,9]];
 
 setInterval(() => {
     console.log('users : ', users);
@@ -45,7 +49,15 @@ const socketIO = {
                 console.log("Data.gameboardID : " + data.gameboardID);
                 const user = users.find(user => user.gameboardID === data.gameboardID);
                 if(user){
-                    ioServer.to(user.socketID).emit('player_receive_new_board', data.board);
+                    for (var i = 0; i < 3; i++){
+                        for (var j = 0; j < 3; j++) {
+                            if(data.board[i][j] !== 9){
+                                board[i][j] = data.board[i][j];
+                                ioServer.to(user.socketID).emit('player_receive_new_board', board);
+                            }
+                        }
+                    }
+                    // ioServer.to(user.socketID).emit('player_receive_new_board', board);
                 }
             });
 
