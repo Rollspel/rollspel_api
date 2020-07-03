@@ -83,6 +83,7 @@ const socketIO = {
 
             socket.on('disconnect', () => {
                 socket.broadcast.emit('message', socket.username + ' s\'est déconnecté.');
+                users = users.filter(user => user.socketID !== socket.id);
                 console.log('disconnection : ', socket.id, socket.username);
             });
         });
