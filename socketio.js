@@ -46,15 +46,13 @@ const socketIO = {
 
             // Update board when tap is OK
             socket.on('player_tap', (data) => {
-                console.log(data);
-                console.log("Data.gameboardID : " + data.gameboardID);
                 const user = users.find(user => user.gameboardID === data.gameboardID);
                 if(user){
                     for (var i = 0; i < 3; i++){
                         for (var j = 0; j < 3; j++) {
                             if(data.board[i][j] !== 9){
                                 board[i][j] = data.board[i][j];
-                                ioServer.to(user.socketID).emit('player_receive_new_board', board);
+                                ioServer.to(user.socketID).emit('player_receive_new_board', {user, board});
                             }
                         }
                     }
@@ -62,15 +60,10 @@ const socketIO = {
                 }
             });
 
-
-            // Don 't update board when tap is KO
-            socket.on('player_tap_not_empty', (data) => {
-                console.log(data);
-                const user = users.find(user => user.gameboardID === data.gameboardID);
-                if(user){
-                    ioServer.to(user.socketID).emit('player_receive_tap_not_empty');
-                }
+            socket.on('send_player_win', data => {
+                ioServer.to(data.gameboardID).emit('receive_player_win', data.activePlayerIndex);
             });
+
 
             // Player win 
 
