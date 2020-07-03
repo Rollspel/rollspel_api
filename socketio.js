@@ -2,10 +2,6 @@ const io = require('socket.io');
 
 let users = [];
 let gameboards = [{ socketID: "12345", gameboardID: "12345" }];
-var board = [
-    [9,9,9],
-    [9,9,9],
-    [9,9,9]];
 
 setInterval(() => {
     console.log('users : ', users);
@@ -15,9 +11,14 @@ const socketIO = {
     start: server => {
         const ioServer = io(server);
         ioServer.on('connection', socket => {
+
+            const board = [
+                [9,9,9],
+                [9,9,9],
+                [9,9,9]
+            ];
             
             console.log('connection', socket.id);
-
 
             socket.on('message', (message) => {
                 console.log(message);
@@ -84,6 +85,7 @@ const socketIO = {
             socket.on('disconnect', () => {
                 socket.broadcast.emit('message', socket.username + ' s\'est déconnecté.');
                 users = users.filter(user => user.socketID !== socket.id);
+                gameboards
                 console.log('disconnection : ', socket.id, socket.username);
             });
         });
