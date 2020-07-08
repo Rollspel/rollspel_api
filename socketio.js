@@ -64,7 +64,7 @@ const socketIO = {
             socket.on('send_player_win', data => {
                 const gameboard = gameboards.find(gameboard => gameboard.gameboardID === data.gameboardID);
                 console.log("Gameboard.socketID : " + gameboard.socketID);
-                console.log("Gameboard.gameboardID : " + gameboard.gameboardID);
+                console.log("Gameboard.gamebgameboardsoardID : " + gameboard.gameboardID);
                 console.log("data.activePlayerIndex : " + data.activePlayerIndex);
                 ioServer.to(gameboard.socketID).emit('receive_player_win', "bonsoir");
             });
@@ -83,7 +83,7 @@ const socketIO = {
             socket.on('disconnect', () => {
                 socket.broadcast.emit('message', socket.username + ' s\'est déconnecté.');
                 users = users.filter(user => user.socketID !== socket.id);
-                gameboards
+                gameboards = gameboards.filter(gameboard => gameboard.gameboardID !== socket.gameboardID);
                 console.log('disconnection : ', socket.id, socket.username);
             });
         });
