@@ -5,6 +5,7 @@ let gameboards = [{ socketID: "12345", gameboardID: "12345" }];
 
 setInterval(() => {
     console.log('users : ', users);
+    console.log('gameboards : ', gameboards);
 }, 10000);
 
 const socketIO = {
@@ -62,6 +63,7 @@ const socketIO = {
 
             socket.on('send_player_win', data => {
                 const gameboard = gameboards.find(gameboard => gameboard.gameboardID === data.gameboardID);
+                console.log("Gameboard.socketID : " + gameboard.socketID);
                 console.log("Gameboard.gameboardID : " + gameboard.gameboardID);
                 console.log("data.activePlayerIndex : " + data.activePlayerIndex);
                 ioServer.to(gameboard.socketID).emit('receive_player_win', "bonsoir");
