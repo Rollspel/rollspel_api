@@ -83,7 +83,7 @@ const socketIO = {
             socket.on('disconnect', () => {
                 socket.broadcast.emit('message', socket.username + ' s\'est déconnecté.');
                 users = users.filter(user => user.socketID !== socket.id);
-                gameboards = gameboards.filter(gameboard => gameboard.gameboardID !== socket.gameboardID);
+                gameboards = [{ socketID: "12345", gameboardID: "12345" }];
                 console.log('disconnection : ', socket.id, socket.username);
             });
         });
