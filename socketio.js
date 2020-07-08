@@ -62,7 +62,8 @@ const socketIO = {
 
             socket.on('send_player_win', data => {
                 const gameboard = gameboards.find(gameboard => gameboard.gameboardID === data.gameboardID);
-                //console.log("I'm here : " + data)
+                console.log("Gameboard.gameboardID : " + gameboard.gameboardID);
+                console.log("data.activePlayerIndex : " + data.activePlayerIndex);
                 ioServer.to(gameboard.socketID).emit('receive_player_win', "bonsoir");
             });
 
