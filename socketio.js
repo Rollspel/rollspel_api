@@ -13,7 +13,7 @@ const socketIO = {
         const ioServer = io(server);
         ioServer.on('connection', socket => {
 
-            const board = [
+            var board = [
                 [9,9,9],
                 [9,9,9],
                 [9,9,9]
@@ -63,9 +63,11 @@ const socketIO = {
 
             socket.on('send_player_win', data => {
                 const gameboard = gameboards.find(gameboard => gameboard.gameboardID === data.gameboardID);
-                console.log("Gameboard.socketID : " + gameboard.socketID);
-                console.log("Gameboard.gamebgameboardsoardID : " + gameboard.gameboardID);
-                console.log("data.activePlayerIndex : " + data.activePlayerIndex);
+                board = [
+                    [9,9,9],
+                    [9,9,9],
+                    [9,9,9]
+                ];
                 ioServer.to(gameboard.socketID).emit('receive_player_win', "bonsoir");
             });
 
