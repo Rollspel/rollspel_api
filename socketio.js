@@ -5,6 +5,7 @@ let gameboards = [{ socketID: "12345", gameboardID: "12345" }];
 
 setInterval(() => {
     console.log('users : ', users);
+    console.log('gameboards : ', gameboards);
 }, 10000);
 
 const socketIO = {
@@ -12,7 +13,7 @@ const socketIO = {
         const ioServer = io(server);
         ioServer.on('connection', socket => {
 
-            const board = [
+            var board = [
                 [9,9,9],
                 [9,9,9],
                 [9,9,9]
@@ -56,14 +57,19 @@ const socketIO = {
 
             socket.on('send_player_win', data => {
                 const gameboard = gameboards.find(gameboard => gameboard.gameboardID === data.gameboardID);
-                ioServer.to(gameboard.socketID).emit('receive_player_win', data.activePlayerIndex);
+                board = [
+                    [9,9,9],
+                    [9,9,9],
+                    [9,9,9]
+                ];
+                ioServer.to(gameboard.socketID).emit('receive_player_win', "bonsoir");
             });
             
 
             socket.on('disconnect', () => {
                 socket.broadcast.emit('message', socket.username + ' s\'est déconnecté.');
                 users = users.filter(user => user.socketID !== socket.id);
-                gameboards
+                gameboards = [{ socketID: "12345", gameboardID: "12345" }];
                 console.log('disconnection : ', socket.id, socket.username);
             });
         });
