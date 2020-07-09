@@ -48,14 +48,8 @@ const socketIO = {
             socket.on('player_tap', (data) => {
                 const user = users.find(user => user.gameboardID === data.gameboardID);
                 if(user){
-                    for (var i = 0; i < 3; i++){
-                        for (var j = 0; j < 3; j++) {
-                            if(data.board[i][j] !== 9){
-                                board[i][j] = data.board[i][j];
-                                ioServer.to(user.socketID).emit('player_receive_new_board', {user, board});
-                            }
-                        }
-                    }
+                    board = data.board
+                    ioServer.to(user.socketID).emit('player_receive_new_board', {user, board});
                     // ioServer.to(user.socketID).emit('player_receive_new_board', board);
                 }
             });
@@ -64,17 +58,7 @@ const socketIO = {
                 const gameboard = gameboards.find(gameboard => gameboard.gameboardID === data.gameboardID);
                 ioServer.to(gameboard.socketID).emit('receive_player_win', data.activePlayerIndex);
             });
-
-
-            // Player win 
-
-            socket.on('player_win', (data) => {
-                const user = users.find(user => user.gameboardID === data.gameboardID);
-                if(user){
-                    ioServer.to(user.socketID).emit('player_receive_winner', data.activePlayerIndex);
-                }
-            });
-
+            
 
             socket.on('disconnect', () => {
                 socket.broadcast.emit('message', socket.username + ' s\'est déconnecté.');
