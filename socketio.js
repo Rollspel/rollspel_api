@@ -81,6 +81,7 @@ const socketIO = {
                 }
             });
 
+            
 
             socket.on('disconnect', () => {
                 socket.broadcast.emit('message', socket.username + ' s\'est déconnecté.');
