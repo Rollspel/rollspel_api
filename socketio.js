@@ -52,6 +52,8 @@ const socketIO = {
                     for (var i = 0; i < 3; i++){
                         for (var j = 0; j < 3; j++) {
                             if(data.board[i][j] !== 9){
+                                console.log("test"+ i + j)
+
                                 board[i][j] = data.board[i][j];
                                 ioServer.to(user.socketID).emit('player_receive_new_board', {user, board});
                             }
