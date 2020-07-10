@@ -58,6 +58,7 @@ const socketIO = {
                             }
                         }
                     }
+                    console.log(board);
                     // ioServer.to(user.socketID).emit('player_receive_new_board', board);
                 }
             });
@@ -70,6 +71,7 @@ const socketIO = {
                     [9,9,9]
                 ];
                 console.log("send_player_win");
+                console.log(board);
                 ioServer.to(gameboard.socketID).emit('receive_player_win', data.activePlayerIndex);
             });
 
