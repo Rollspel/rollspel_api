@@ -52,6 +52,7 @@ const socketIO = {
                     for (var i = 0; i < 3; i++){
                         for (var j = 0; j < 3; j++) {
                             if(data.board[i][j] !== 9){
+                                console.log("player.tap : " +i+j);
                                 board[i][j] = data.board[i][j];
                                 ioServer.to(user.socketID).emit('player_receive_new_board', {user, board});
                             }
@@ -78,6 +79,7 @@ const socketIO = {
                     [9,9,9],
                     [9,9,9]
                 ];
+                console.log("Hello the draw");
                 ioServer.to(gameboard.socketID).emit('receive_player_draw', data.activePlayerIndex);
             });
             
