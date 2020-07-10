@@ -70,11 +70,11 @@ const socketIO = {
                             if(data.board[i][j] !== 9){
                                 console.log("player.tap : " +i+j);
                                 board[i][j] = data.board[i][j];
+                                console.log(board);
                                 ioServer.to(user.socketID).emit('player_receive_new_board', {user, board});
                             }
                         }
                     }
-                    console.log(board);
                     // ioServer.to(user.socketID).emit('player_receive_new_board', board);
                 }
             });
