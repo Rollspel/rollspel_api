@@ -12,7 +12,7 @@ const socketIO = {
         const ioServer = io(server);
         ioServer.on('connection', socket => {
 
-            const board = [
+            var board = [
                 [9,9,9],
                 [9,9,9],
                 [9,9,9]
@@ -73,13 +73,18 @@ const socketIO = {
 
             socket.on('send_player_draw', data => {
                 const gameboard = gameboards.find(gameboard => gameboard.gameboardID === data.gameboardID);
+                board = [
+                    [9,9,9],
+                    [9,9,9],
+                    [9,9,9]
+                ];
                 ioServer.to(gameboard.socketID).emit('receive_player_draw', data.activePlayerIndex);
             });
             
             socket.on('disconnect', () => {
                 socket.broadcast.emit('message', socket.username + ' s\'est déconnecté.');
                 users = users.filter(user => user.socketID !== socket.id);
-                gameboards
+                gameboards = gameboards.filter(gameboard => gameboard.socketID !== socket.id);
                 console.log('disconnection : ', socket.id, socket.username);
             });
         });
