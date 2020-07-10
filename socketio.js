@@ -5,7 +5,6 @@ let gameboards = [{ socketID: "12345", gameboardID: "12345" }];
 
 setInterval(() => {
     console.log('users : ', users);
-    console.log('gameboards : ', gameboards);
 }, 10000);
 
 const socketIO = {
@@ -13,7 +12,7 @@ const socketIO = {
         const ioServer = io(server);
         ioServer.on('connection', socket => {
 
-            var board = [
+            const board = [
                 [9,9,9],
                 [9,9,9],
                 [9,9,9]
@@ -49,11 +48,10 @@ const socketIO = {
             socket.on('player_tap', (data) => {
                 const user = users.find(user => user.gameboardID === data.gameboardID);
                 if(user){
+                    board = data.board
                     for (var i = 0; i < 3; i++){
                         for (var j = 0; j < 3; j++) {
                             if(data.board[i][j] !== 9){
-                                console.log("test"+ i + j)
-
                                 board[i][j] = data.board[i][j];
                                 ioServer.to(user.socketID).emit('player_receive_new_board', {user, board});
                             }
@@ -65,31 +63,18 @@ const socketIO = {
 
             socket.on('send_player_win', data => {
                 const gameboard = gameboards.find(gameboard => gameboard.gameboardID === data.gameboardID);
-                board = [
-                    [9,9,9],
-                    [9,9,9],
-                    [9,9,9]
-                ];
-                ioServer.to(gameboard.socketID).emit('receive_player_win', "bonsoir");
-            });
-            
-
-
-            // Player win 
-
-            socket.on('player_win', (data) => {
-                const user = users.find(user => user.gameboardID === data.gameboardID);
-                if(user){
-                    ioServer.to(user.socketID).emit('player_receive_winner', data.activePlayerIndex);
-                }
+                ioServer.to(gameboard.socketID).emit('receive_player_win', data.activePlayerIndex);
             });
 
+            socket.on('send_player_draw', data => {
+                const gameboard = gameboards.find(gameboard => gameboard.gameboardID === data.gameboardID);
+                ioServer.to(gameboard.socketID).emit('receive_player_draw', data.activePlayerIndex);
+            });
             
-
             socket.on('disconnect', () => {
                 socket.broadcast.emit('message', socket.username + ' s\'est déconnecté.');
                 users = users.filter(user => user.socketID !== socket.id);
-                gameboards = [{ socketID: "12345", gameboardID: "12345" }];
+                gameboards
                 console.log('disconnection : ', socket.id, socket.username);
             });
         });
