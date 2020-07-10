@@ -25,12 +25,6 @@ const socketIO = {
         const ioServer = io(server);
         ioServer.on('connection', socket => {
 
-            var board = [
-                [9,9,9],
-                [9,9,9],
-                [9,9,9]
-            ];
-
             console.log('connection', socket.id);
 
             socket.on('message', (message) => {
@@ -78,12 +72,12 @@ const socketIO = {
 
             socket.on('send_player_win', data => {
                 const gameboard = gameboards.find(gameboard => gameboard.gameboardID === data.gameboardID);
-                // board = [
-                //     [9,9,9],
-                //     [9,9,9],
-                //     [9,9,9]
-                // ];
-                resetBoard();
+                board = [
+                    [9,9,9],
+                    [9,9,9],
+                    [9,9,9]
+                ];
+                // resetBoard();
                 console.log("send_player_win");
                 console.log(board);
                 ioServer.to(gameboard.socketID).emit('receive_player_win', data.activePlayerIndex);
@@ -91,12 +85,12 @@ const socketIO = {
 
             socket.on('send_player_draw', data => {
                 const gameboard = gameboards.find(gameboard => gameboard.gameboardID === data.gameboardID);
-                // board = [
-                //     [9,9,9],
-                //     [9,9,9],
-                //     [9,9,9]
-                // ];
-                resetBoard();
+                board = [
+                    [9,9,9],
+                    [9,9,9],
+                    [9,9,9]
+                ];
+                // resetBoard();
                 console.log("send_player_draw");
                 ioServer.to(gameboard.socketID).emit('receive_player_draw', data.activePlayerIndex);
             });
