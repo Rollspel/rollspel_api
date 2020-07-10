@@ -4,7 +4,7 @@ let users = [];
 let gameboards = [{ socketID: "12345", gameboardID: "12345" }];
 
 setInterval(() => {
-    console.log('users : ', users);
+    // console.log('users : ', users);
 }, 10000);
 
 const socketIO = {
@@ -69,6 +69,7 @@ const socketIO = {
                     [9,9,9],
                     [9,9,9]
                 ];
+                console.log("send_player_win");
                 ioServer.to(gameboard.socketID).emit('receive_player_win', data.activePlayerIndex);
             });
 
@@ -79,7 +80,7 @@ const socketIO = {
                     [9,9,9],
                     [9,9,9]
                 ];
-                console.log("Hello the draw");
+                console.log("send_player_draw");
                 ioServer.to(gameboard.socketID).emit('receive_player_draw', data.activePlayerIndex);
             });
             
