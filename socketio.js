@@ -62,6 +62,9 @@ const socketIO = {
                 const user = users.find(user => user.gameboardID === data.gameboardID);
                 if(user){
                     // board = data.board
+                    console.log("data.board : " + data.board);
+                    console.log("data.board[0] : " + data.board[0]);
+                    console.log("data.board[0][0] : " + data.board[0][0]);
                     for (var i = 0; i < 3; i++){
                         for (var j = 0; j < 3; j++) {
                             if(data.board[i][j] !== 9){
