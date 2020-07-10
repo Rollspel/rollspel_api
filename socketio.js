@@ -48,7 +48,7 @@ const socketIO = {
             socket.on('player_tap', (data) => {
                 const user = users.find(user => user.gameboardID === data.gameboardID);
                 if(user){
-                    board = data.board
+                    // board = data.board
                     for (var i = 0; i < 3; i++){
                         for (var j = 0; j < 3; j++) {
                             if(data.board[i][j] !== 9){
