@@ -2,6 +2,19 @@ const io = require('socket.io');
 
 let users = [];
 let gameboards = [{ socketID: "12345", gameboardID: "12345" }];
+let board = [
+    [9,9,9],
+    [9,9,9],
+    [9,9,9]
+];
+
+function resetBoard(){
+    board = [
+        [9,9,9],
+        [9,9,9],
+        [9,9,9]
+    ];
+}
 
 setInterval(() => {
     // console.log('users : ', users);
@@ -17,14 +30,6 @@ const socketIO = {
                 [9,9,9],
                 [9,9,9]
             ];
-
-            function resetBoard(){
-                this.board = [
-                    [9,9,9],
-                    [9,9,9],
-                    [9,9,9]
-                ];
-            }
 
             console.log('connection', socket.id);
 
