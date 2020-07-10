@@ -8,14 +8,6 @@ let board = [
     [9,9,9]
 ];
 
-function resetBoard(){
-    board = [
-        [9,9,9],
-        [9,9,9],
-        [9,9,9]
-    ];
-}
-
 setInterval(() => {
     // console.log('users : ', users);
 }, 10000);
@@ -55,7 +47,6 @@ const socketIO = {
             socket.on('player_tap', (data) => {
                 const user = users.find(user => user.gameboardID === data.gameboardID);
                 if(user){
-                    // board = data.board
                     for (var i = 0; i < 3; i++){
                         for (var j = 0; j < 3; j++) {
                             if(data.board[i][j] !== 9){
@@ -66,7 +57,6 @@ const socketIO = {
                             }
                         }
                     }
-                    // ioServer.to(user.socketID).emit('player_receive_new_board', board);
                 }
             });
 
@@ -77,7 +67,6 @@ const socketIO = {
                     [9,9,9],
                     [9,9,9]
                 ];
-                // resetBoard();
                 console.log("send_player_win");
                 console.log(board);
                 ioServer.to(gameboard.socketID).emit('receive_player_win', data.activePlayerIndex);
@@ -90,7 +79,6 @@ const socketIO = {
                     [9,9,9],
                     [9,9,9]
                 ];
-                // resetBoard();
                 console.log("send_player_draw");
                 ioServer.to(gameboard.socketID).emit('receive_player_draw', data.activePlayerIndex);
             });
